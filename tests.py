@@ -16,6 +16,7 @@ from test_neighbour_table_overflow import TestNeighbourTableOverflow
 from test_hostname_matches import TestHostnameMatches
 from test_sat5_cobbler_config import TestSat5CobblerConfig
 from test_sat5_hw_reqs import TestSat5HWReqs
+from test_sat6_task_pending import TestSat6TaskPending
 
 if __name__ == '__main__':
     # TODO: Also check that all rules have corresponding test module
