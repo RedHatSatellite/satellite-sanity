@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# Get curent version of package from spec file
+PROJ=satellite-sanity
+SPEC=$PROJ.spec
+
+if [ ! -r $SPEC ]; then
+   echo "ERROR: Could not read '$SPEC'" >&2
+   exit 10
+fi
+VERSION=`cat VERSION`
+if [ -z "$VERSION" ]; then
+   echo "ERROR: Could not determine version" >&2
+   exit 10
+fi
+
+DIR=$PROJ-$VERSION
+mkdir -p "$DIR"
+
+#cp AUTHORS LICENSE README "$DIR/"
+cp $SPEC "$DIR/"
+sed -i "s/REPLACE_ME_WITH_VERSION/$VERSION/" "$DIR/$SPEC"
+cp satellite-sanity "$DIR/"
+cp tests.py tests.sh "$DIR/"
+cp -r --no-dereference satellite_sanity "$DIR/"
+cp setup.py "$DIR/"
+sed -i "s/REPLACE_ME_WITH_VERSION/$VERSION/" "$DIR/setup.py"
+
+# Cleanup some files we do not need/want
+find "$DIR/" -type f -name \*.pyc -delete
+find "$DIR/" -type f -name \*.swp -delete
+
+tar -czf $PROJ-$VERSION.tar.gz "$DIR/" >/dev/null
+rm -rf "$DIR"

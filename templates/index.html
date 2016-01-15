@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block title %}Satellite sanity{% endblock %}
+{% block content %}
+{% if files %}
+  <h1>Upload data</h1>
+  <form action='' method='POST' enctype='multipart/form-data'>
+    {% for f in files %}
+    <p>{{ f }}: <input type='file' name='{{ f }}'></p>
+    {% endfor %}
+    <input type='submit' value='Upload'>
+  </form>
+  <h2>Uploaded data-sets</h2>
+  <ul>
+  {% for d, s in dirs.iteritems() %}
+    <li><a href='/{{ d }}'>{{ d }}</a> ({{ s|filesizeformat }}) [<a href='/delete/{{ d }}'>delete</a>]</li>
+  {% endfor %}
+  </ul>
+{% endif %}
+{% if directory_relative and results %}
+  <h1>Working on {{ directory_relative }}</h1>
+  <ul>
+  {% for r in results %}
+    <li>[
+      {% if r['status'] == 'FAIL' %}
+        <span class='text_fail'>FAIL</span>
+      {% elif r['status'] == 'SKIP' %}
+        <span class='text_skip'>SKIP</span>
+      {% elif r['status'] == 'PASS' %}
+        <span class='text_pass'>PASS</span>
+      {% else %}
+        ???
+      {% endif %}
+    ] {{ r['name'] }} (<a href="http://git.app.eng.bos.redhat.com/git/SystemsManagementQATools.git/tree/satellite-sanity/satellite_sanity/rules/{{ r['label'] }}.py">{{ r['label'] }}</a>)
+    {% if r['status'] == 'FAIL' %}
+    <p>Rule returned this info:</p>
+    <pre>{{ r['text'] }}</pre>
+    {% endif %}
+    {% if r['used'] and r['status'] == 'FAIL' %}
+    <p>Rule uses these data:</p>
+    <ul>
+    {% for l, f in r['used'].iteritems() %}
+      <li><code><a href='/file/{{ directory_relative }}/{{ f }}'>{{ l }}</a> (file: {{ f }})</code></li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+  </li>
+  {% endfor %}
+  </ul>
+{% endif %}
+{% if filecontent %}
+  <pre>{% for row in filecontent %}{{ row }}{% endfor %}</pre>
+{% endif %}
+{% endblock %}

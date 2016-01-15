@@ -1,0 +1,91 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
+import sys
+
+import satellite_sanity
+from satellite_sanity.config import logger
+
+import argparse
+
+
+parser = argparse.ArgumentParser(description="Check Red Hat Satellite sanity")
+parser.add_argument("-d", "--debug", help="enable debug messages", action="store_true")
+group = parser.add_mutually_exclusive_group()
+group.add_argument("--list-tags", help="list available tags", action="store_true")
+group.add_argument("--list-rules", help="list available rules", action="store_true")
+parser.add_argument("-t", "--tags", help="run rules tagged with one of these tags (comma separated)")
+parser.add_argument("-s", "--save", help="just save all collectable data and quit", action="store_true")
+parser.add_argument("-f", "--from_dir", help="run rules on data in given directory")
+args = parser.parse_args()
+
+# Configure logging
+if args.debug:
+  logger.setLevel(satellite_sanity.config.L_DEBUG)
+else:
+  logger.setLevel(satellite_sanity.config.L_ERROR)
+
+# Determina tags we are going to use
+if args.tags:
+  tags = args.tags.split(',')
+else:
+  tags = ['general']
+if not args.list_tags and not args.save:
+  print "Selected tag(s): %s" % ', '.join(tags)
+
+# Create object to work with rules
+r = satellite_sanity.util.rules()
+
+# Handle --list-tags funcionality
+if args.list_tags:
+  for t in r.list_tags():
+    print t
+  sys.exit(0)
+
+# Handle --list-rules funcionality
+if args.list_rules:
+  for r in r.list_rules(tags):
+    print "%s (%s); tags: %s" % (r['name'], r['label'], ', '.join(r['tags']))
+  sys.exit(0)
+
+# Create object to interface with data (either from directory or live system)
+if args.from_dir:
+  data = satellite_sanity.input_data.InputData(args.from_dir)
+else:
+  data = satellite_sanity.input_data.InputData()
+
+# Handle --save funcionality
+if args.save:
+  data_dir = data.save()
+  print "Saved to %s" % data_dir
+  sys.exit(0)
+
+# Load checks and check that we can run rules with given tags
+c = satellite_sanity.util.checks()
+passed, failed = c.check(tags, data)
+if len(failed) > 0:
+  for tag, why in failed.iteritems():
+    print >>sys.stderr, "Prerequisites for rules tagged with %s tag were not met:" % tag
+    for w in why:
+      print >>sys.stderr, "  %s" % w
+  print >>sys.stderr, "ERROR: Some prerequisities were not met. Exiting."
+  sys.exit(1)
+
+# Load rules and run them
+score = 0
+for r in r.run(tags, data):
+  if r['status'] == 'FAIL':
+    result = satellite_sanity.util.color_fail('FAIL')
+    score += 1
+  elif r['status'] == 'SKIP':
+    result = satellite_sanity.util.color_skip('SKIP')
+  elif r['status'] == 'PASS':
+    result = satellite_sanity.util.color_pass('PASS')
+  else:
+    logger.error("Failed to understand to result of %s" % r['status'])
+    continue
+  print "[ %s ] %s (%s)" % (result, r['name'], r['label'])
+  if r['result']:
+    for l in r['text'].split("\n"):
+      print "         %s" % l
+sys.exit(score if score <= 100 else 100)

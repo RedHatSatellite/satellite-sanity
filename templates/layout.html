@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+  <head>
+    <title>{% block title %}{% endblock %} - Satellite sanity</title>
+    {% block scripts %}{% endblock %}
+    <style type="text/css">
+table {
+ border-collapse: collapse;
+}
+table, td, th {
+  border: 1px solid black;
+}
+.text_pass {
+  color: green;
+}
+.text_skip {
+  color: orange;
+}
+.text_fail {
+  color: red;
+}
+    </style>
+  </head>
+  <body>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class='flashes'>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+{% block content %}{% endblock %}
+  </body>
+</html>
