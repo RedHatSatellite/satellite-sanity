@@ -7,7 +7,7 @@ Summary:       Red Hat Satellite health check
 License:       GPLv2
 Group:         Applications/Internet
 URL:           https://github.com/SatelliteQE/satellite-sanity
-Source0:       https://github.com/SatelliteQE/satellite-sanity/archive/master-%{version}.zip
+Source0:       https://github.com/SatelliteQE/satellite-sanity/archive/satellite-sanity-0.1.tar.gz
 BuildRoot:     %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:     noarch
 BuildRequires: python
