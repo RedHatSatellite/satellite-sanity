@@ -17,6 +17,7 @@ group.add_argument("--list-rules", help="list available rules", action="store_tr
 parser.add_argument("-t", "--tags", help="run rules tagged with one of these tags (comma separated)")
 parser.add_argument("-s", "--save", help="just save all collectable data and quit", action="store_true")
 parser.add_argument("-f", "--from_dir", help="run rules on data in given directory")
+parser.add_argument("-n", "--nagios-plugin", help="run as nagios plugin (exit code and output set appropriately)", action="store_true")
 args = parser.parse_args()
 
 # Configure logging
@@ -30,7 +31,7 @@ if args.tags:
   tags = args.tags.split(',')
 else:
   tags = ['general']
-if not args.list_tags and not args.save:
+if not args.list_tags and not args.save and not args.nagios_plugin:
   print "Selected tag(s): %s" % ', '.join(tags)
 
 # Create object to work with rules
@@ -72,20 +73,43 @@ if len(failed) > 0:
   sys.exit(1)
 
 # Load rules and run them
-score = 0
+failed = 0
+skipped = 0
+passed = 0
+unknown = 0
 for r in r.run(tags, data):
   if r['status'] == 'FAIL':
     result = satellite_sanity.util.color_fail('FAIL')
-    score += 1
+    failed += 1
   elif r['status'] == 'SKIP':
     result = satellite_sanity.util.color_skip('SKIP')
+    skipped += 1
   elif r['status'] == 'PASS':
     result = satellite_sanity.util.color_pass('PASS')
+    passed += 1
   else:
     logger.error("Failed to understand to result of %s" % r['status'])
+    unknown += 1
     continue
-  print "[ %s ] %s (%s)" % (result, r['name'], r['label'])
-  if r['result']:
-    for l in r['text'].split("\n"):
-      print "         %s" % l
-sys.exit(score if score <= 100 else 100)
+  if not args.nagios_plugin:
+    print "[ %s ] %s (%s)" % (result, r['name'], r['label'])
+    if r['result']:
+      for l in r['text'].split("\n"):
+        print "         %s" % l
+
+if args.nagios_plugin:
+  output = "Satellite sanity results: failed: %s, skipped: %s, passed: %s, unknown: %s" % (passed, skipped, failed, unknown)
+  if failed + skipped + unknown == 0 and passed > 0:
+    print "OK- %s | %s" % (output, output)
+    sys.exit(0)
+  elif failed == 0 and skipped + unknown > 0:
+    print "WARNING- %s | %s" % (output, output)
+    sys.exit(1)
+  elif failed > 0:
+    print "CRITICAL- %s | %s" % (output, output)
+    sys.exit(2)
+  else:
+    print "UNKNOWN- %s | %s" % (output, output)
+    sys.exit(3)
+else:
+  sys.exit(failed if failed <= 100 else 100)
