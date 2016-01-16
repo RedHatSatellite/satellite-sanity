@@ -15,4 +15,5 @@ def main(data):
 def text(result):
     return "You have %s tasks in 'paused' state with result 'pending'.\n" % result['count'] \
            + "Run \"hammer task list --search 'state = paused AND result = pending'\" to get the list.\n" \
-           + "See https://access.redhat.com/solutions/1547743"
+           + "See https://access.redhat.com/solutions/1547743\n" \
+           + "and https://access.redhat.com/solutions/1263123"
