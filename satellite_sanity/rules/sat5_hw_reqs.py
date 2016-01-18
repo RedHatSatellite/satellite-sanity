@@ -4,43 +4,34 @@
 tags = ['Satellite_5']
 name = 'Check basic HW requirements'
 
+from satellite_sanity import util
+
+
 def os_arch(data):
   """
   Return architecture we are running on.
   """
-  assert len(data['uname_m']) == 1
-  return data['uname_m'][0]
+  return util.os_arch(data['uname_m'])
 
 def cpu_speed(data):
   """
   Return processor speed so we can ensure we have >=2.4GHz on x86_64.
   Returns None on s390x.
   """
-  if os_arch(data) == 'x86_64':
-    for line in data['proc_cpuinfo']:
-      if line.startswith('cpu MHz'):
-        val = line.split(':')[1].strip()
-        return float(val)
+  return util.cpu_speed(data['proc_cpuinfo'], data['uname_m'])
 
 def cpu_cache(data):
   """
   Return cache size so we can verify we have >=512KB on x86_64.
   Returns None on s390x.
   """
-  if os_arch(data) == 'x86_64':
-    for line in data['proc_cpuinfo']:
-      if line.startswith('cache size'):
-        val = line.split(':')[1].strip().replace(' KB', '')
-        return float(val)
+  return util.cpu_cache(data['proc_cpuinfo'], data['uname_m'])
 
 def ram_size(data):
   """
   Return RAM size so we can ensure wa have >=4GB of RAM.
   """
-  for line in data['proc_meminfo']:
-    if line.startswith('MemTotal:'):
-      val = line.split(':')[1].strip().replace(' kB', '')
-      return float(val)
+  return util.ram_size(data['proc_meminfo'])
 
 def main(data):
   out = []

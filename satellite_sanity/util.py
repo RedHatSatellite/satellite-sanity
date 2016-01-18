@@ -15,3 +15,71 @@ def get_days_uptime(uptime):
     return int(uptime_split[2])
   else:
     return 0
+
+
+def os_arch(uname_m):
+  """
+  Return architecture we are running on.
+  """
+  assert len(uname_m) == 1
+  return uname_m[0]
+
+
+def cpu_speed(proc_cpuinfo, uname_m):
+  """
+  Return processor speed on x86_64.   FIXME: what about processor scaling?
+  Returns None on s390x.
+  """
+  if os_arch(uname_m) == 'x86_64':
+    for line in proc_cpuinfo:
+      if line.startswith('cpu MHz'):
+        val = line.split(':')[1].strip()
+        return float(val)
+
+
+def cpu_cache(proc_cpuinfo, uname_m):
+  """
+  Return CPU cache size.
+  Returns None on s390x.
+  """
+  if os_arch(uname_m) == 'x86_64':
+    for line in proc_cpuinfo:
+      if line.startswith('cache size'):
+        val = line.split(':')[1].strip().replace(' KB', '')
+        return float(val)
+
+
+def cpu_cores(proc_cpuinfo):
+  """
+  Return number of CPU cores.
+  """
+  count = 0
+  for line in proc_cpuinfo:
+    if line.startswith('processor'):
+      count += 1
+  return count
+
+
+def __val_from_proc_meminfo(proc_meminfo, label):
+  """
+  Return value in kB for given label (like 'MemTotal' or 'SwapTotal') from
+  structure of /proc/meminfo
+  """
+  for line in proc_meminfo:
+    if line.startswith('%s:' % label):
+      val = line.split(':')[1].strip().replace(' kB', '')
+      return float(val)
+
+
+def ram_size(proc_meminfo):
+  """
+  Return RAM size in kB.
+  """
+  return __val_from_proc_meminfo(proc_meminfo, 'MemTotal')
+
+
+def swap_size(proc_meminfo):
+  """
+  Return swap size in kB.
+  """
+  return __val_from_proc_meminfo(proc_meminfo, 'SwapTotal')
