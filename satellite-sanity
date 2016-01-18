@@ -35,7 +35,7 @@ if not args.list_tags and not args.save and not args.nagios_plugin:
   print "Selected tag(s): %s" % ', '.join(tags)
 
 # Create object to work with rules
-r = satellite_sanity.util.rules()
+r = satellite_sanity.plugins.rules()
 
 # Handle --list-tags funcionality
 if args.list_tags:
@@ -62,7 +62,7 @@ if args.save:
   sys.exit(0)
 
 # Load checks and check that we can run rules with given tags
-c = satellite_sanity.util.checks()
+c = satellite_sanity.plugins.checks()
 passed, failed = c.check(tags, data)
 if len(failed) > 0:
   for tag, why in failed.iteritems():
@@ -79,13 +79,13 @@ passed = 0
 unknown = 0
 for r in r.run(tags, data):
   if r['status'] == 'FAIL':
-    result = satellite_sanity.util.color_fail('FAIL')
+    result = satellite_sanity.output.color_fail('FAIL')
     failed += 1
   elif r['status'] == 'SKIP':
-    result = satellite_sanity.util.color_skip('SKIP')
+    result = satellite_sanity.output.color_skip('SKIP')
     skipped += 1
   elif r['status'] == 'PASS':
-    result = satellite_sanity.util.color_pass('PASS')
+    result = satellite_sanity.output.color_pass('PASS')
     passed += 1
   else:
     logger.error("Failed to understand to result of %s" % r['status'])
