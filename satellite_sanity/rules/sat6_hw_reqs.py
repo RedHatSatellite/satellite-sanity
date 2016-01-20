@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-tags = ['Satellite_6']
+tags = ['Satellite_6', 'Satellite_6_preinst']
 name = 'Check basic HW requirements'
 
 from satellite_sanity import util
