@@ -98,7 +98,7 @@ for r in r.run(tags, data):
         print "         %s" % l
 
 if args.nagios_plugin:
-  output = "Satellite sanity results: failed: %s, skipped: %s, passed: %s, unknown: %s" % (passed, skipped, failed, unknown)
+  output = "Satellite sanity results: passed: %s, skipped: %s, failed: %s, unknown: %s" % (passed, skipped, failed, unknown)
   if failed + skipped + unknown == 0 and passed > 0:
     print "OK- %s | %s" % (output, output)
     sys.exit(0)
