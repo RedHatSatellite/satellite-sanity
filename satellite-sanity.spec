@@ -1,10 +1,10 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:          satellite-sanity
-Version:       0.1
+Version:       REPLACE_ME_WITH_VERSION
 Release:       1%{?dist}
 Summary:       Red Hat Satellite health check
-License:       GPLv2
+License:       GPLv3
 Group:         Applications/Internet
 URL:           https://github.com/SatelliteQE/satellite-sanity
 Source0:       https://github.com/SatelliteQE/satellite-sanity/archive/satellite-sanity-0.1.tar.gz
@@ -52,5 +52,8 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Dec 09 2015 Jan Hutar <jhutar@redhat.com> 0.1.1-1
+- Let's try to build in COPR
+
 * Wed Dec 09 2015 Jan Hutar <jhutar@redhat.com> 0.1-1
 - Init
