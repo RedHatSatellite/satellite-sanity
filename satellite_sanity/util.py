@@ -83,3 +83,25 @@ def swap_size(proc_meminfo):
   Return swap size in kB.
   """
   return __val_from_proc_meminfo(proc_meminfo, 'SwapTotal')
+
+
+def satellite5_version(installed_rpms):
+    for line in installed_rpms:
+        if line.startswith('satellite-schema-'):
+            return line.replace('satellite-schema-', '')
+
+
+def satellite5_is_emb_pg(rhn_conf):
+    """
+    Return true if we are running on Satellite with embedded PostgreSQL
+    """
+    for line in rhn_conf:
+        if line.startswith('db_backend'):
+            backend = line.split('=')[1].strip()
+            if backend != 'postgresql':
+                return False
+        if line.startswith('db_host'):
+            backend = line.split('=')[1].strip()
+            if backend != '':
+                return False
+    return True

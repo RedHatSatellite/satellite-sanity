@@ -4,6 +4,8 @@
 tags = ['Satellite_5']
 name = 'There is enough free disk-space in key places'
 
+from satellite_sanity import util
+
 
 def parse_df_Pk(output):
     """
@@ -53,22 +55,11 @@ def var_satellite(data):
 
 
 def satellite_version(data):
-    for line in data['installed-rpms']:
-        if line.startswith('satellite-schema-'):
-            return line.replace('satellite-schema-', '')
+    return util.satellite5_version(data['installed-rpms'])
 
 
 def satellite_is_emb_pg(data):
-    for line in data['rhn_conf']:
-        if line.startswith('db_backend'):
-            backend = line.split('=')[1].strip()
-            if backend != 'postgresql':
-                return False
-        if line.startswith('db_host'):
-            backend = line.split('=')[1].strip()
-            if backend != '':
-                return False
-    return True
+    return util.satellite5_is_emb_pg(data['rhn_conf'])
 
 
 def main(data):
