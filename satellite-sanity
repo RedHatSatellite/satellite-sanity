@@ -16,7 +16,8 @@ group.add_argument("--list-tags", help="list available tags", action="store_true
 group.add_argument("--list-rules", help="list available rules", action="store_true")
 parser.add_argument("-t", "--tags", help="run rules tagged with one of these tags (comma separated)")
 parser.add_argument("-s", "--save", help="just save all collectable data and quit", action="store_true")
-parser.add_argument("-f", "--from_dir", help="run rules on data in given directory")
+parser.add_argument("-i", "--from_dir", help="run rules on data in given directory")
+parser.add_argument("-f", "--force", help="run even if checks for selected tags failed", action="store_true")
 parser.add_argument("-n", "--nagios-plugin", help="run as nagios plugin (exit code and output set appropriately)", action="store_true")
 args = parser.parse_args()
 
@@ -69,8 +70,9 @@ if len(failed) > 0:
     print >>sys.stderr, "Prerequisites for rules tagged with %s tag were not met:" % tag
     for w in why:
       print >>sys.stderr, "  %s" % w
-  print >>sys.stderr, "ERROR: Some prerequisities were not met. Exiting."
-  sys.exit(1)
+  if not args.force:
+    print >>sys.stderr, "ERROR: Some prerequisities were not met. Exiting. Maybe you want to add '--force'?"
+    sys.exit(1)
 
 # Load rules and run them
 failed = 0
