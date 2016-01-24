@@ -14,6 +14,7 @@ BuildRequires: python
 BuildRequires: python-devel
 BuildRequires: python-setuptools
 Requires:      python
+Requires:      python-dateutil
 
 
 %description
