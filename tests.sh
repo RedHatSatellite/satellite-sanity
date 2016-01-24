@@ -21,12 +21,19 @@ function bye() {
 
 set +e
 ./satellite-sanity --tags general >/dev/null && bye "FAIL: Plain run failed" 1
+./satellite-sanity --tags Satellite_5 >/dev/null && bye "FAIL: Plain run failed" 1   # check for this tag should fail
 ./satellite-sanity --nagios-plugin --tags general >/dev/null
 [ $? -eq 2 ] || bye "FAIL: Nagios exit code is not 2"
 set +o pipefail
 ./satellite-sanity --nagios-plugin --tags general 2>&1 \
   | grep 'CRITICAL- Satellite sanity results: passed: 1, skipped: 1, failed: 1, unknown: 0 | Satellite sanity results: passed: 1, skipped: 1, failed: 1, unknown: 0'
-[ $? -ne 0 ] && bye "FAIL: Nagios output is not correct"
+[ $? -ne 0 ] && bye "FAIL: Nagios output is not correct" 1
+./satellite-sanity --tags Satellite_5 2>&1 \
+  | grep "ERROR: Some prerequisities were not met. Exiting. Maybe you want to add '--force'?"
+[ $? -ne 0 ] && bye "FAIL: Failing check should mention '--force'" 1
+./satellite-sanity --tags Satellite_5 --force 2>&1 \
+  | grep "^.*FAIL.*Taskomatic service is running (sat5_taskomatic_running)$"
+[ $? -ne 0 ] && bye "FAIL: Even with '--force' taskomatic check was not ran" 1
 set -o pipefail
 set -e
 
