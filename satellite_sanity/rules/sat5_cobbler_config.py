@@ -3,7 +3,7 @@
 
 import re
 
-tags = ['Satellite_5']
+tags = ['Satellite_5', 'Spacewalk']
 name = 'Basic Cobbler settings are correct'
 
 def etc_cobbler_settings(data):

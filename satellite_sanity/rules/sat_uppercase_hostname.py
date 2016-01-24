@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-tags = ['Satellite_5', 'Satellite_6', 'Satellite_6_preinst']
+tags = ['Satellite_5', 'Spacewalk', 'Satellite_6', 'Satellite_6_preinst']
 name = 'Only lower-case letters allowed in hostname'
 
 def main(data):

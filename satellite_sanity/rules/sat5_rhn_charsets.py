@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-tags = ['Satellite_5']
+tags = ['Satellite_5', 'Spacewalk']
 name = 'Database have correct encoding set'
 
 def satellite_db_backend(data):

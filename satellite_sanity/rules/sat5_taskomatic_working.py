@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-tags = ['Satellite_5']
+tags = ['Satellite_5', 'Spacewalk']
 name = 'Taskomatic service is not stuck'
 
 import datetime

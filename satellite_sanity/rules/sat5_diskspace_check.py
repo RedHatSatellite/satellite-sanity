@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-tags = ['Satellite_5']
+tags = ['Satellite_5', 'Spacewalk']
 name = 'There is enough free disk-space in key places'
 
 from satellite_sanity import util
