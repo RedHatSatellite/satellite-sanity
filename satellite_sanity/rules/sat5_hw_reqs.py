@@ -54,7 +54,7 @@ def main(data):
 
 def text(result):
   out = ""
-  out += "System runninng Satellite 5 should meet minimal required HW configuration:\n"
+  out += "System running Satellite 5 should meet minimal required HW configuration:\n"
   for e in result['errors']:
     out += "  %s\n" % e
   out += "See https://access.redhat.com/documentation/en-US/Red_Hat_Satellite/5.7/html-single/Installation_Guide/index.html#x86_64_Hardware_Requirements\n"
