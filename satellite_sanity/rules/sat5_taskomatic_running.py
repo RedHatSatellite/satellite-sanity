@@ -34,5 +34,5 @@ def text(result):
     out = ""
     out += "Service Taskomatic does't seems to be running.\n"
     out += "Use `service taskomatic restart` to restart it.\n"
-    out += "For more info check https://access.redhat.com/solutions/232243"
+    out += "See https://access.redhat.com/solutions/2116911"
     return out
