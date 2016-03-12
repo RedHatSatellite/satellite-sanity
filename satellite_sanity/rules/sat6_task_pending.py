@@ -4,9 +4,6 @@
 tags = ['Satellite_6']
 name = 'Ensure you do not have any Satellite 6 pending tasks'
 
-def hostname(data):
-    return data['hostname'] or None
-
 def main(data):
     count = len(data['hammer_task_list_paused_pending']) - 1
     if count > 0:
