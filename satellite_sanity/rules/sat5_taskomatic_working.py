@@ -5,10 +5,10 @@ tags = ['Satellite_5', 'Spacewalk']
 name = 'Taskomatic service is not stuck'
 
 import datetime
-import dateutil.parser
+from satellite_sanity import util
 
 def get_current_time(data):
-    return dateutil.parser.parse(data['date'][0], ignoretz=True)
+    return util.get_current_time(data['date'])
 
 def get_tasko_last_log_time(data):
     date_str = data['tail_n_1_rhn_taskomatic_daemon'][-1].split("|")[2].strip()

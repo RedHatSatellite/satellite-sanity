@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
+import dateutil.parser
 from config import logger
+
+def get_current_time(date):
+  assert len(date) == 1
+  return dateutil.parser.parse(date[0], ignoretz=True)
 
 def get_days_uptime(uptime):
   """Return number of days from uptime"""
