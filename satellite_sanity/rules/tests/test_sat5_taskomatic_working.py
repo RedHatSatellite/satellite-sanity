@@ -21,16 +21,15 @@ TIME_RECENT2 = '2015-12-20 07:05:41'
 TIME_FUTURE2 = '2015-12-20 10:06:17'
 
 DATE = 'Sun Dec 20 08:01:27 CET 2015'
+DATE_PARSED = datetime.datetime(2015, 12, 20, 8, 01, 27)
 
 FORMAT_TASKO = '%Y/%m/%d %H:%M:%S'
-FORMAT_DATE = '%a %b %d %H:%M:%S %Z %Y'
 
 class TestSat5TaskomaticWorking(unittest.TestCase):
 
     def test_get_current_time(self):
         input_data = {'date': [DATE]}
-        parsed = datetime.datetime.strptime(DATE, FORMAT_DATE)
-        self.assertEqual(parsed, sat5_taskomatic_working.get_current_time(input_data))
+        self.assertEqual(DATE_PARSED, sat5_taskomatic_working.get_current_time(input_data))
 
     def test_get_tasko_last_log_time(self):
         input_data = {'tail_n_1_rhn_taskomatic_daemon': [LINE % (TIME_OLD, TIME_OLD2)]}
