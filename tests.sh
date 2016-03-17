@@ -22,6 +22,10 @@ function bye() {
 set +e
 ./satellite-sanity --tags general >/dev/null && bye "FAIL: Plain run failed" 1
 ./satellite-sanity --tags Satellite_5 >/dev/null && bye "FAIL: Plain run failed" 1   # check for this tag should fail
+./satellite-sanity --tags general --rules example_fails >/dev/null && bye "FAIL: Run with specified rule failed" 1
+./satellite-sanity --tags general --rules example_fails 2>&1 \
+  | grep 'Selected rule(s): example_fails'
+[ $? -eq 1 ] || bye "FAIL: Run with specified rule not prints whats expected" 1
 ./satellite-sanity --nagios-plugin --tags general >/dev/null
 [ $? -eq 2 ] || bye "FAIL: Nagios exit code is not 2"
 set +o pipefail
