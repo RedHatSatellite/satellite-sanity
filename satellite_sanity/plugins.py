@@ -124,13 +124,20 @@ class rules():
     return results
 
 
-  def run(self, tags, data):
-    """Run all rules and return dict with their answers"""
+  def run(self, tags, rules, data):
+    """Run rules (run all when "rules" is empty, othervise run only these
+       listed there) and return dict with their answers"""
     results = []
     for mod in self.rules:
+      # Skip rule if we are supposed to run only specific rules and this
+      # one is not the choosen one
+      if len(rules) > 0 and mod.__name__ not in rules:
+        logger.debug("Skipping %s because only specific rules are supposed to run" % mod.__name__)
+        continue
       # Skip this rule if there is no intersection of tags we should run
       # and tags this rule should be run for
       if len([val for val in tags if val in mod.tags]) == 0:
+        logger.debug("Skipping %s because it is not tagged with provided tags" % mod.__name__)
         continue
       # Finally run the rule
       func = getattr(mod, 'main')

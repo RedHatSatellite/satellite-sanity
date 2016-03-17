@@ -15,6 +15,7 @@ group = parser.add_mutually_exclusive_group()
 group.add_argument("--list-tags", help="list available tags", action="store_true")
 group.add_argument("--list-rules", help="list available rules", action="store_true")
 parser.add_argument("-t", "--tags", help="run rules tagged with one of these tags (comma separated)")
+parser.add_argument("-r", "--rules", help="run only these rules (comma separated)")
 parser.add_argument("-s", "--save", help="just save all collectable data and quit", action="store_true")
 parser.add_argument("-i", "--from_dir", help="run rules on data in given directory")
 parser.add_argument("-f", "--force", help="run even if checks for selected tags failed", action="store_true")
@@ -34,6 +35,13 @@ else:
   tags = ['general']
 if not args.list_tags and not args.save and not args.nagios_plugin:
   print "Selected tag(s): %s" % ', '.join(tags)
+
+# Parse rules we are supposed to run if any
+if args.rules:
+  rules = args.rules.split(',')
+  print "Selected rule(s): %s" % ', '.join(rules)
+else:
+  rules = []
 
 # Create object to work with rules
 r = satellite_sanity.plugins.rules()
@@ -79,7 +87,7 @@ failed = 0
 skipped = 0
 passed = 0
 unknown = 0
-for r in r.run(tags, data):
+for r in r.run(tags, rules, data):
   if r['status'] == 'FAIL':
     result = satellite_sanity.output.color_fail('FAIL')
     failed += 1
