@@ -11,7 +11,7 @@ def find_taskomatic_process(data):
     Check the ps output to see if taskomatic is running
     """
     for line in data['ps_auxcww']:
-        if line.endswith(' taskomaticd'):
+        if line.endswith(' taskomaticd') or ' /usr/bin/taskomaticd ' in line:
             return {'TASKOMATIC_PROCESS_LINE': line}
 
 
