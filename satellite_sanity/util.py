@@ -91,9 +91,12 @@ def swap_size(proc_meminfo):
 
 
 def satellite5_version(installed_rpms):
+    """
+    Returns version of satellite-schema package
+    """
     for line in installed_rpms:
         if line.startswith('satellite-schema-'):
-            return line.replace('satellite-schema-', '')
+            return line.replace('satellite-schema-', '').split()[0]
 
 
 def satellite5_is_emb_pg(rhn_conf):
