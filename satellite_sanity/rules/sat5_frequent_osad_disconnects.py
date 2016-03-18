@@ -29,14 +29,12 @@ def indicator_syslog(data, date):
                 line_date = dateutil.parser.parse(line_date_str)
             except ValueError:
                 continue
-            ###print "COMPARING", line_date, date, line_date >= date
             if line_date >= date:
                 ip = ip_pattern.search(line).group(1)
                 jid = jid_pattern.search(line).group(1)
                 disconnects.append({'date': line_date, 'ip': ip, 'jid': jid})
             else:
                 break
-    ###print "RETURN", disconnects
     return disconnects
 
 
@@ -82,29 +80,22 @@ def __dblog(data, date):
     in_traceback = False
     in_traceback_detail = False
     for line in data[-no:]:
-        ###print line
         if 'ERROR:  deadlock detected' in line:
-            ###print "... entering traceback"
             in_traceback = True
             in_traceback_detail = False
             continue
         if not in_traceback:
-            ###print "... not in traceback :("
             continue
         if 'DETAIL:  Process' in line:
-            ###print "... ... in tb detail"
             in_traceback_detail = True
             continue
         if not in_traceback_detail:
-            ###print "... ... not in tb detail :("
             continue
         if not line.startswith("	"):
-            ###print "... ... ... unindented line :("
             in_traceback = False
             in_traceback_detail = False
             continue
         if 'update rhnPushClient' in line:
-            ###print "... ... ... OK"
             score += 1
             in_traceback = False
             in_traceback_detail = False
@@ -153,17 +144,14 @@ def main(data):
 
     # Check that multiple IPs are not trying to use single JID
     for jid in jids:
-        ###print ">>>", jid
         ips = []
         for i in [ i for i in disconnects if i['jid'] == jid ]:
-            ###print ">>> >>>", i['ip']
             # If we still did not seen any IP, just add first one
             if len(ips) == 0:
                 ips.append(i['ip'])
                 continue
             # If we have seen than one IP already, but after we have seen it we have seen different one, log error
             if i['ip'] in ips and i['ip'] != ips[-1]:
-                ###print ">>> >>> >>> ERROR", ips
                 score_disconnects += 1
                 if example_jid == None and example_ips == []:
                     example_jid = jid
