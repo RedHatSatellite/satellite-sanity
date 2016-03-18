@@ -22,32 +22,32 @@ def get_days_uptime(uptime):
     return 0
 
 
-def os_arch(uname_m):
+def os_arch(uname_a):
   """
   Return architecture we are running on.
   """
-  assert len(uname_m) == 1
-  return uname_m[0]
+  assert len(uname_a) == 1
+  return uname_a[0].split()[-2]
 
 
-def cpu_speed(proc_cpuinfo, uname_m):
+def cpu_speed(proc_cpuinfo, uname_a):
   """
   Return processor speed on x86_64.   FIXME: what about processor scaling?
   Returns None on s390x.
   """
-  if os_arch(uname_m) == 'x86_64':
+  if os_arch(uname_a) == 'x86_64':
     for line in proc_cpuinfo:
       if line.startswith('cpu MHz'):
         val = line.split(':')[1].strip()
         return float(val)
 
 
-def cpu_cache(proc_cpuinfo, uname_m):
+def cpu_cache(proc_cpuinfo, uname_a):
   """
   Return CPU cache size.
   Returns None on s390x.
   """
-  if os_arch(uname_m) == 'x86_64':
+  if os_arch(uname_a) == 'x86_64':
     for line in proc_cpuinfo:
       if line.startswith('cache size'):
         val = line.split(':')[1].strip().replace(' KB', '')

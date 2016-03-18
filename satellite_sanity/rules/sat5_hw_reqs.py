@@ -11,21 +11,21 @@ def os_arch(data):
   """
   Return architecture we are running on.
   """
-  return util.os_arch(data['uname_m'])
+  return util.os_arch(data['uname_a'])
 
 def cpu_speed(data):
   """
   Return processor speed so we can ensure we have >=2.4GHz on x86_64.
   Returns None on s390x.
   """
-  return util.cpu_speed(data['proc_cpuinfo'], data['uname_m'])
+  return util.cpu_speed(data['proc_cpuinfo'], data['uname_a'])
 
 def cpu_cache(data):
   """
   Return cache size so we can verify we have >=512KB on x86_64.
   Returns None on s390x.
   """
-  return util.cpu_cache(data['proc_cpuinfo'], data['uname_m'])
+  return util.cpu_cache(data['proc_cpuinfo'], data['uname_a'])
 
 def ram_size(data):
   """

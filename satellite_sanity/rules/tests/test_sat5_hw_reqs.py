@@ -5,9 +5,9 @@ import unittest
 
 from satellite_sanity.rules import sat5_hw_reqs
 
-UNAME_M_CORRECT = ['x86_64']
-UNAME_M_S390X = ['s390x']
-UNAME_M_WRONG = ['ppc64']
+UNAME_A_CORRECT = ['Linux x86-64.example.com 2.6.32-573.11.1.el6.x86_64 #1 SMP Fri Nov 13 05:11:49 EST 2015 x86_64 x86_64 x86_64 GNU/Linux']
+UNAME_A_S390X = ['Linux s390x.example.com 2.6.32-573.18.1.el6.s390x #1 SMP Wed Jan 6 11:16:09 EST 2016 s390x s390x s390x GNU/Linux']
+UNAME_A_WRONG = ['Linux ppcp.example.com 2.6.32-573.18.1.el6.ppc64 #1 SMP Wed Jan 6 11:15:06 EST 2016 ppc64 ppc64 ppc64 GNU/Linux']
 
 CPUINFO_CORRECT = """processor	: 0
 vendor_id	: GenuineIntel
@@ -208,31 +208,31 @@ Hugepagesize:     4096 kB""".split("\n")
 class TestSat5HWReqs(unittest.TestCase):
 
     def test_os_arch(self):
-        self.assertEquals('x86_64', sat5_hw_reqs.os_arch({'uname_m': UNAME_M_CORRECT}))
-        self.assertEquals('s390x', sat5_hw_reqs.os_arch({'uname_m': UNAME_M_S390X}))
-        self.assertEquals('ppc64', sat5_hw_reqs.os_arch({'uname_m': UNAME_M_WRONG}))
+        self.assertEquals('x86_64', sat5_hw_reqs.os_arch({'uname_a': UNAME_A_CORRECT}))
+        self.assertEquals('s390x', sat5_hw_reqs.os_arch({'uname_a': UNAME_A_S390X}))
+        self.assertEquals('ppc64', sat5_hw_reqs.os_arch({'uname_a': UNAME_A_WRONG}))
 
     def test_cpu_speed_ok(self):
         input_data = {}
-        input_data['uname_m'] = UNAME_M_CORRECT
+        input_data['uname_a'] = UNAME_A_CORRECT
         input_data['proc_cpuinfo'] = CPUINFO_CORRECT
         self.assertEquals(2600.004, sat5_hw_reqs.cpu_speed(input_data))
 
     def test_cpu_speed_ee(self):
         input_data = {}
-        input_data['uname_m'] = UNAME_M_WRONG
+        input_data['uname_a'] = UNAME_A_WRONG
         input_data['proc_cpuinfo'] = CPUINFO_CORRECT
         self.assertEquals(None, sat5_hw_reqs.cpu_speed(input_data))
 
     def test_cpu_cache_ok(self):
         input_data = {}
-        input_data['uname_m'] = UNAME_M_CORRECT
+        input_data['uname_a'] = UNAME_A_CORRECT
         input_data['proc_cpuinfo'] = CPUINFO_CORRECT
         self.assertEquals(20480, sat5_hw_reqs.cpu_cache(input_data))
 
     def test_cpu_cache_ee(self):
         input_data = {}
-        input_data['uname_m'] = UNAME_M_WRONG
+        input_data['uname_a'] = UNAME_A_WRONG
         input_data['proc_cpuinfo'] = CPUINFO_CORRECT
         self.assertEquals(None, sat5_hw_reqs.cpu_cache(input_data))
 
@@ -241,14 +241,14 @@ class TestSat5HWReqs(unittest.TestCase):
 
     def test_main_no_match(self):
         input_data = {}
-        input_data['uname_m'] = UNAME_M_CORRECT
+        input_data['uname_a'] = UNAME_A_CORRECT
         input_data['proc_cpuinfo'] = CPUINFO_CORRECT
         input_data['proc_meminfo'] = MEMINFO_CORRECT
         self.assertEquals(None, sat5_hw_reqs.main(input_data))
 
     def test_main_match_cpu(self):
         input_data = {}
-        input_data['uname_m'] = UNAME_M_CORRECT
+        input_data['uname_a'] = UNAME_A_CORRECT
         input_data['proc_cpuinfo'] = CPUINFO_WRONG
         input_data['proc_meminfo'] = MEMINFO_CORRECT
         expected = {'errors': [
@@ -258,7 +258,7 @@ class TestSat5HWReqs(unittest.TestCase):
 
     def test_main_match_ram(self):
         input_data = {}
-        input_data['uname_m'] = UNAME_M_CORRECT
+        input_data['uname_a'] = UNAME_A_CORRECT
         input_data['proc_cpuinfo'] = CPUINFO_CORRECT
         input_data['proc_meminfo'] = MEMINFO_WRONG
         expected = {'errors': [
@@ -268,7 +268,7 @@ class TestSat5HWReqs(unittest.TestCase):
 
     def test_main_match_both(self):
         input_data = {}
-        input_data['uname_m'] = UNAME_M_CORRECT
+        input_data['uname_a'] = UNAME_A_CORRECT
         input_data['proc_cpuinfo'] = CPUINFO_WRONG
         input_data['proc_meminfo'] = MEMINFO_WRONG
         expected = {'errors': [
