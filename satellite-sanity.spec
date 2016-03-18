@@ -34,8 +34,8 @@ popd
 %install
 rm -rf %{buildroot}
 pushd %{name}-%{version}
-%{__python2} setup.py install --skip-build --root %{buildroot}
-rm -f %{buildroot}%{python2_sitelib}/satellite_sanity/rules/example_fails.*
+%{__python} setup.py install --skip-build --root %{buildroot}
+rm -f %{buildroot}%{python_sitelib}/satellite_sanity/rules/example_fails.*
 mkdir -p %{buildroot}%{_bindir}/
 cp -p satellite-sanity %{buildroot}%{_bindir}/
 popd
@@ -47,12 +47,15 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%{python2_sitelib}/*egg-info
-%{python2_sitelib}/satellite_sanity
+%{python_sitelib}/*egg-info
+%{python_sitelib}/satellite_sanity
 %{_bindir}/satellite-sanity
 
 
 %changelog
+* Fri Mar 18 2016 Jan Hutar <jhutar@redhat.com> 0.1.3-1
+- Fixes, enhancements, new rules and should build on RHEL6 as well
+
 * Wed Dec 09 2015 Jan Hutar <jhutar@redhat.com> 0.1.1-1
 - Let's try to build in COPR
 
