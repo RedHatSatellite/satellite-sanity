@@ -13,7 +13,7 @@ from config import logger
 class DataNotAvailable(Exception):
     pass
 
-class InputData():
+class InputData(object):
   def __init__(self, data_dir=None):
     self.__data = {}   # data storage (e.g. key/label = 'hostname-s'
                        # and value = 'dhcp123-45')
@@ -110,7 +110,10 @@ class InputData():
       except AssertionError:
         logger.warn("Failed when obtaining %s" % key)
       fd.close()
-      data_file_lines = len(self[key]) if self[key] is not None else -1,
+      if self[key] is not None:
+          data_file_lines = len(self[key])
+      else:
+          data_file_lines = -1
       logger.debug("Saved %s lines to %s" % (data_file_lines, data_file))
     return data_dir
 

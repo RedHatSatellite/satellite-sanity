@@ -122,4 +122,6 @@ if args.nagios_plugin:
     print "UNKNOWN- %s | %s" % (output, output)
     sys.exit(3)
 else:
-  sys.exit(failed if failed <= 100 else 100)
+  if failed > 100:
+      failed = 100
+  sys.exit(failed)

@@ -28,7 +28,7 @@ def load_modules_from_dir(directory):
   return out
 
 
-class checks():
+class checks(object):
   def __init__(self):
     """Load all checks/modules and store them in self.checks list"""
     self.checks = []
@@ -80,7 +80,7 @@ class checks():
     return passed, failed
 
 
-class rules():
+class rules(object):
   def __init__(self):
     """Load all rules/modules and store them in self.rules list"""
     self.rules = []

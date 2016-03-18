@@ -2,7 +2,7 @@
 
 Name:          satellite-sanity
 Version:       REPLACE_ME_WITH_VERSION
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       Red Hat Satellite health check
 License:       GPLv3
 Group:         Applications/Internet
@@ -15,6 +15,9 @@ BuildRequires: python-devel
 BuildRequires: python-setuptools
 Requires:      python
 Requires:      python-dateutil
+%if 0%{?rhel} <= 6
+Requires:      python-argparse
+%endif
 
 
 %description
@@ -47,12 +50,17 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%{python_sitelib}/*egg-info
 %{python_sitelib}/satellite_sanity
+%if 0%{?fedora} || 0%{?rhel} >= 6
+%{python_sitelib}/*egg-info
+%endif
 %{_bindir}/satellite-sanity
 
 
 %changelog
+* Fri Mar 18 2016 Jan Hutar <jhutar@redhat.com> 0.1.3-2
+- Some changes for RHEL5
+
 * Fri Mar 18 2016 Jan Hutar <jhutar@redhat.com> 0.1.3-1
 - Fixes, enhancements, new rules and should build on RHEL6 as well
 
