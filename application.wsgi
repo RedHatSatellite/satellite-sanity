@@ -54,6 +54,8 @@ def du(start_path):
     """http://stackoverflow.com/questions/1392413/calculating-a-directory-size-using-python"""
     total_size = 0
     for dirpath, dirnames, filenames in os.walk(start_path):
+        if not os.access(dirpath, os.X_OK):
+            continue
         for f in filenames:
             fp = os.path.join(dirpath, f)
             if not os.path.islink(fp):
@@ -74,7 +76,7 @@ def index(directory_relative=None):
                 uploaded[f] = filename
                 flash("File %s uploaded as %s" % (f, filename))
         if uploaded:
-            directory = tempfile.mkdtemp(suffix='', prefix='web', dir='/tmp')
+            directory = tempfile.mkdtemp(suffix='', prefix='web', dir=application.config['UPLOAD_FOLDER'])
             for f, filename in uploaded.iteritems():
                 extracted = os.path.join(directory, f)
                 extract(filename, extracted)
@@ -84,9 +86,9 @@ def index(directory_relative=None):
         if directory_relative:
             directory_relative = secure_filename(directory_relative)
             directory = os.path.join(application.config['UPLOAD_FOLDER'], directory_relative)
-            rules = satellite_sanity.util.rules()
+            rules = satellite_sanity.plugins.rules()
             data = satellite_sanity.input_data.InputData(directory)
-            results = rules.run(['Satellite_5', 'general'], data)
+            results = rules.run(['Satellite_5', 'general'], [], data)
             return render_template('index.html', directory_relative=directory_relative, results=results)
         else:
             dirs = {}

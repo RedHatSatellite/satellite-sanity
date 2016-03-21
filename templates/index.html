@@ -30,7 +30,7 @@
       {% else %}
         ???
       {% endif %}
-    ] {{ r['name'] }} (<a href="http://git.app.eng.bos.redhat.com/git/SystemsManagementQATools.git/tree/satellite-sanity/satellite_sanity/rules/{{ r['label'] }}.py">{{ r['label'] }}</a>)
+    ] {{ r['name'] }} (<a href="https://github.com/SatelliteQE/satellite-sanity/tree/master/satellite_sanity/rules/{{ r['label'] }}.py">{{ r['label'] }}</a>)
     {% if r['status'] == 'FAIL' %}
     <p>Rule returned this info:</p>
     <pre>{{ r['text'] }}</pre>
