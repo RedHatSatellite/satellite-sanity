@@ -47,7 +47,7 @@ class InputData(object):
        If command fails, usually "['']" is stored."""
     assert label not in self.__data
     # Are we running on live system or from directory?
-    if self.__data_dir == None:
+    if not self.__data_dir:
       if label not in self.__access_list:
         self.__access_list[label] = self.config['commands'][label]
       # TODO: Add some timeouts, ulimit, nice... (?)

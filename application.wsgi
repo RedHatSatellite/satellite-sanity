@@ -22,7 +22,7 @@ import subprocess
 import posixpath
 import shutil
 
-import satellite_sanity
+import satellite_sanity_lib
 
 UPLOAD_FOLDER = '/tmp/satellite-sanity'
 application.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -86,8 +86,8 @@ def index(directory_relative=None):
         if directory_relative:
             directory_relative = secure_filename(directory_relative)
             directory = os.path.join(application.config['UPLOAD_FOLDER'], directory_relative)
-            rules = satellite_sanity.plugins.rules()
-            data = satellite_sanity.input_data.InputData(directory)
+            rules = satellite_sanity_lib.plugins.Rules()
+            data = satellite_sanity_lib.input_data.InputData(directory)
             results = rules.run(['Satellite_5', 'general'], [], data)
             return render_template('index.html', directory_relative=directory_relative, results=results)
         else:

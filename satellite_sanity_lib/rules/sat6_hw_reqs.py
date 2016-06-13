@@ -4,7 +4,7 @@
 tags = ['Satellite_6', 'Satellite_6_preinst']
 name = 'Check basic HW requirements'
 
-from satellite_sanity import util
+from satellite_sanity_lib import util
 
 
 def cpu_cores(data):

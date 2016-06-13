@@ -15,7 +15,7 @@ OVER = [
   'Dec  4 06:21:37 elisha kernel: Neighbour table overflow.'
 ]
 
-from satellite_sanity.rules import neighbour_table_overflow
+from satellite_sanity_lib.rules import neighbour_table_overflow
 
 class TestNeighbourTableOverflow(unittest.TestCase):
   def test_main(self):

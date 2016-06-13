@@ -7,7 +7,7 @@ name = 'Make sure osad on client is not disconnecting frequently'
 import datetime
 import dateutil.parser
 import re
-from satellite_sanity import util
+from satellite_sanity_lib import util
 
 INTERVAL = 72   # check only log messages not older than 72 hours
 

@@ -3,7 +3,7 @@
 
 import unittest
 
-from satellite_sanity.rules import sat6_correct_channel
+from satellite_sanity_lib.rules import sat6_correct_channel
 
 EMPTY = ["This system is not yet registered. Try 'subscription-manager register --help' for more information."]
 YREL = ["Release: 6.4"]

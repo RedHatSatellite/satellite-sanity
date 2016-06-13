@@ -3,7 +3,7 @@
 
 import unittest
 
-from satellite_sanity.rules import sat6_task_pending
+from satellite_sanity_lib.rules import sat6_task_pending
 
 class TestSat6TaskPending(unittest.TestCase):
   def test_match(self):

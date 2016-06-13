@@ -4,7 +4,7 @@
 tags = ['Satellite_5', 'Spacewalk']
 name = 'Taskomatic service is running'
 
-from satellite_sanity.util import get_days_uptime
+from satellite_sanity_lib.util import get_days_uptime
 
 def find_taskomatic_process(data):
     """

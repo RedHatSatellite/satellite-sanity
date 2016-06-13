@@ -4,7 +4,7 @@
 tags = ['Satellite_5']
 name = 'Check basic HW requirements'
 
-from satellite_sanity import util
+from satellite_sanity_lib import util
 
 
 def os_arch(data):

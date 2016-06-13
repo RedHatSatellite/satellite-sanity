@@ -4,7 +4,7 @@
 tags = ['Satellite_5', 'Spacewalk']
 name = 'There is enough free disk-space in key places'
 
-from satellite_sanity import util
+from satellite_sanity_lib import util
 
 
 def parse_df_Pk(output):

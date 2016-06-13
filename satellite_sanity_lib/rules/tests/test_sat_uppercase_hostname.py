@@ -4,7 +4,7 @@
 import unittest
 
 
-from satellite_sanity.rules import sat_uppercase_hostname
+from satellite_sanity_lib.rules import sat_uppercase_hostname
 
 class TestSatUppercaseHostname(unittest.TestCase):
   def test_match(self):

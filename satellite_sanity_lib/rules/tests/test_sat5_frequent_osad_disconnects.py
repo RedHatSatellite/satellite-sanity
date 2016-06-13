@@ -4,7 +4,7 @@
 import unittest
 import datetime
 
-from satellite_sanity.rules import sat5_frequent_osad_disconnects
+from satellite_sanity_lib.rules import sat5_frequent_osad_disconnects
 
 YEAR = datetime.datetime.now().year
 

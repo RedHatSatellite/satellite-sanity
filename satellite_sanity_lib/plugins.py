@@ -28,7 +28,7 @@ def load_modules_from_dir(directory):
   return out
 
 
-class checks(object):
+class Checks(object):
   def __init__(self):
     """Load all checks/modules and store them in self.checks list"""
     self.checks = []
@@ -80,7 +80,7 @@ class checks(object):
     return passed, failed
 
 
-class rules(object):
+class Rules(object):
   def __init__(self):
     """Load all rules/modules and store them in self.rules list"""
     self.rules = []
@@ -114,15 +114,15 @@ class rules(object):
     """List all rules"""
     results = []
     for mod in self.rules:
-      # Skip this rule if there is no intersection of tags we should run
-      # and tags this rule should be run for
-      if len([val for val in tags if val in mod.tags]) == 0:
-        continue
-      r_name = getattr(mod, 'name')
-      r_tags = getattr(mod, 'tags')
-      results.append({'label': mod.__name__, 'name': r_name, 'tags': r_tags})
+      # Append this rule only if at least one of its tags belong to tags
+      # we should run for
+      if not set(tags).isdisjoint(set(mod.tags)):
+        r_name = getattr(mod, 'name')
+        r_tags = getattr(mod, 'tags')
+        results.append({'label': mod.__name__,
+                        'name': r_name,
+                        'tags': r_tags})
     return results
-
 
   def run(self, tags, rules, data):
     """Run rules (run all when "rules" is empty, othervise run only these

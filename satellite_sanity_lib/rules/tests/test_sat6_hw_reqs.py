@@ -3,7 +3,7 @@
 
 import unittest
 
-from satellite_sanity.rules import sat6_hw_reqs
+from satellite_sanity_lib.rules import sat6_hw_reqs
 
 CPUINFO_CORRECT = """processor	: 0
 vendor_id	: GenuineIntel

@@ -3,7 +3,7 @@
 
 import unittest
 
-from satellite_sanity.rules import hostname_matches
+from satellite_sanity_lib.rules import hostname_matches
 
 class TestHostnameMatches(unittest.TestCase):
   def test_nomatch(self):

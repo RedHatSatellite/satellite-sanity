@@ -3,7 +3,7 @@
 
 import unittest
 
-from satellite_sanity.rules import sat5_correct_java
+from satellite_sanity_lib.rules import sat5_correct_java
 
 ALTERNATIVES_IBM_160 = """java - status is auto.
  link currently points to /usr/lib/jvm/jre-1.6.0-ibm.x86_64/bin/java

@@ -5,7 +5,7 @@ import unittest
 import datetime
 import time
 
-from satellite_sanity.rules import sat5_taskomatic_working
+from satellite_sanity_lib.rules import sat5_taskomatic_working
 
 # Later in the tests we can not compare for equality, becase when we specify
 # TIME_NOW here, it have nanoseconds as well, but time format used in

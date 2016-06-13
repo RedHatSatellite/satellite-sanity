@@ -3,7 +3,7 @@
 
 import unittest
 
-from satellite_sanity.rules import sat6_hammer_ping
+from satellite_sanity_lib.rules import sat6_hammer_ping
 
 GOOD = """candlepin:      
     Status:          ok

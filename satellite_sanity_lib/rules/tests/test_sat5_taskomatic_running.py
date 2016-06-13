@@ -3,7 +3,7 @@
 
 import unittest
 
-from satellite_sanity.rules import sat5_taskomatic_running
+from satellite_sanity_lib.rules import sat5_taskomatic_running
 
 UPTIME_1 = " 21:59:49 up 10 days, 19:46,  8 users,  load average: 0.62, 10.56, 17.57".split("\n")
 UPTIME_2 = " 13:53:07 up 2 days, 17:38, 16 users,  load average: 0.42, 0.35, 0.20".split("\n")

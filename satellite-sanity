@@ -3,125 +3,165 @@
 
 import sys
 
-import satellite_sanity
-from satellite_sanity.config import logger
+import satellite_sanity_lib
+from satellite_sanity_lib.config import logger
+from satellite_sanity_lib import output
 
 import argparse
 
 
-parser = argparse.ArgumentParser(description="Check Red Hat Satellite sanity")
-parser.add_argument("-d", "--debug", help="enable debug messages", action="store_true")
-group = parser.add_mutually_exclusive_group()
-group.add_argument("--list-tags", help="list available tags", action="store_true")
-group.add_argument("--list-rules", help="list available rules", action="store_true")
-parser.add_argument("-t", "--tags", help="run rules tagged with one of these tags (comma separated)")
-parser.add_argument("-r", "--rules", help="run only these rules (comma separated)")
-parser.add_argument("-s", "--save", help="just save all collectable data and quit", action="store_true")
-parser.add_argument("-i", "--from_dir", help="run rules on data in given directory")
-parser.add_argument("-f", "--force", help="run even if checks for selected tags failed", action="store_true")
-parser.add_argument("-n", "--nagios-plugin", help="run as nagios plugin (exit code and output set appropriately)", action="store_true")
-args = parser.parse_args()
+def parse_arguments():
+    parser = argparse.ArgumentParser(description="Check Red Hat Satellite sanity")
+    parser.add_argument("-d", "--debug", help="enable debug messages", action="store_true")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("--list-tags", help="list available tags", action="store_true")
+    group.add_argument("--list-rules", help="list available rules", action="store_true")
+    parser.add_argument("-t", "--tags", help="run rules tagged with one of these tags (comma separated)",
+                        default="general")
+    parser.add_argument("-r", "--rules", help="run only these rules (comma separated)")
+    parser.add_argument("-s", "--save", help="just save all collectable data and quit", action="store_true")
+    parser.add_argument("-i", "--from_dir", help="run rules on data in given directory")
+    parser.add_argument("-f", "--force", help="run even if checks for selected tags failed", action="store_true")
+    parser.add_argument("-n", "--nagios-plugin", help="run as nagios plugin (exit code and output set appropriately)",
+                        action="store_true")
+    return parser.parse_args()
 
-# Configure logging
-if args.debug:
-  logger.setLevel(satellite_sanity.config.L_DEBUG)
-else:
-  logger.setLevel(satellite_sanity.config.L_ERROR)
 
-# Determina tags we are going to use
-if args.tags:
-  tags = args.tags.split(',')
-else:
-  tags = ['general']
-if not args.list_tags and not args.save and not args.nagios_plugin:
-  print "Selected tag(s): %s" % ', '.join(tags)
+def determine_tags(args):
+    return args.tags.split(',')
 
-# Parse rules we are supposed to run if any
-if args.rules:
-  rules = args.rules.split(',')
-  print "Selected rule(s): %s" % ', '.join(rules)
-else:
-  rules = []
 
-# Create object to work with rules
-r = satellite_sanity.plugins.rules()
+def parse_rules(args):
+    return args.rules.split(',')
 
-# Handle --list-tags funcionality
-if args.list_tags:
-  for t in r.list_tags():
-    print t
-  sys.exit(0)
 
-# Handle --list-rules funcionality
-if args.list_rules:
-  for r in r.list_rules(tags):
-    print "%s (%s); tags: %s" % (r['name'], r['label'], ', '.join(r['tags']))
-  sys.exit(0)
+def list_tags():
+    for list_tag in rule_container.list_tags():
+        print list_tag
 
-# Create object to interface with data (either from directory or live system)
-if args.from_dir:
-  data = satellite_sanity.input_data.InputData(args.from_dir)
-else:
-  data = satellite_sanity.input_data.InputData()
 
-# Handle --save funcionality
-if args.save:
-  data_dir = data.save()
-  print "Saved to %s" % data_dir
-  sys.exit(0)
+def list_rules(args, rule_runner):
+    for rule in rule_runner.list_rules(tags):
+        print "%s (%s); tags: %s" % (rule['name'],
+                                     rule['label'],
+                                     ', '.join(rule['tags']))
 
-# Load checks and check that we can run rules with given tags
-c = satellite_sanity.plugins.checks()
-passed, failed = c.check(tags, data)
-if len(failed) > 0:
-  for tag, why in failed.iteritems():
-    print >>sys.stderr, "Prerequisites for rules tagged with %s tag were not met:" % tag
-    for w in why:
-      print >>sys.stderr, "  %s" % w
-  if not args.force:
-    print >>sys.stderr, "ERROR: Some prerequisities were not met. Exiting. Maybe you want to add '--force'?"
-    sys.exit(1)
 
-# Load rules and run them
-failed = 0
-skipped = 0
-passed = 0
-unknown = 0
-for r in r.run(tags, rules, data):
-  if r['status'] == 'FAIL':
-    result = satellite_sanity.output.color_fail('FAIL')
-    failed += 1
-  elif r['status'] == 'SKIP':
-    result = satellite_sanity.output.color_skip('SKIP')
-    skipped += 1
-  elif r['status'] == 'PASS':
-    result = satellite_sanity.output.color_pass('PASS')
-    passed += 1
-  else:
-    logger.error("Failed to understand to result of %s" % r['status'])
-    unknown += 1
-    continue
-  if not args.nagios_plugin:
-    print "[ %s ] %s (%s)" % (result, r['name'], r['label'])
-    if r['result']:
-      for l in r['text'].split("\n"):
-        print "         %s" % l
+def acquire_input_data(directory=None):
+    if directory:
+        input_data = satellite_sanity_lib.input_data.InputData(args.from_dir)
+    else:
+        input_data = satellite_sanity_lib.input_data.InputData()
+    return input_data
 
-if args.nagios_plugin:
-  output = "Satellite sanity results: passed: %s, skipped: %s, failed: %s, unknown: %s" % (passed, skipped, failed, unknown)
-  if failed + skipped + unknown == 0 and passed > 0:
-    print "OK- %s | %s" % (output, output)
-    sys.exit(0)
-  elif failed == 0 and skipped + unknown > 0:
-    print "WARNING- %s | %s" % (output, output)
-    sys.exit(1)
-  elif failed > 0:
-    print "CRITICAL- %s | %s" % (output, output)
-    sys.exit(2)
-  else:
-    print "UNKNOWN- %s | %s" % (output, output)
-    sys.exit(3)
-else:
-  if failed > 100:
-      failed = 100
-  sys.exit(failed)
+
+def check_rules_runnable(input_data):
+    checks_container = satellite_sanity_lib.plugins.Checks()
+    passed, failed = checks_container.check(tags, input_data)
+    data_are_ok = True
+    if failed:
+        for tag, why in failed.iteritems():
+            print >> sys.stderr, "Prerequisites for rules tagged with %s tag were not met:" % tag
+            for w in why:
+                print >> sys.stderr, "  %s" % w
+        data_are_ok = False
+    return data_are_ok
+
+
+def process_rules(input_data, rule_container, rules, tags):
+    # Load rules and run them
+    results = {"FAIL": 0,
+               "SKIP": 0,
+               "PASS": 0, }
+    unknown = 0
+    for processed_rule in rule_container.run(tags, rules, input_data):
+        current_status = processed_rule['status']
+        if current_status in results:
+            results[current_status] += 1
+        else:
+            logger.error("Failed to understand to result of %s" % rule_container['status'])
+            unknown += 1
+        if not args.nagios_plugin:
+            print_detailed_result(processed_rule)
+    results["UNKNOWN"] = unknown
+    return results
+
+
+def print_detailed_result(rule):
+
+    print "[ %s ] %s (%s)" % (output.output_funcs[rule["status"]](),
+                              rule['name'],
+                              rule['label'])
+    if rule['result']:
+        for l in rule['text'].split("\n"):
+            print "         %s" % l
+
+
+def nagios_output(results):
+    output = "Satellite sanity results: passed: %s, skipped: %s, failed: %s, unknown: %s" % (
+        results["PASS"],
+        results["SKIP"],
+        results["FAIL"],
+        results["UNKNOWN"])
+
+    bad_results = sum([results[item] for item in ["SKIP", "FAIL", "UNKNOWN"]])
+
+    if not bad_results and results["PASS"]:
+        print "OK- %s | %s" % (output, output)
+        sys.exit(0)
+    elif bad_results and bad_results - results["FAIL"] == bad_results:
+        print "WARNING- %s | %s" % (output, output)
+        sys.exit(1)
+    elif results["FAIL"]:
+        print "CRITICAL- %s | %s" % (output, output)
+        sys.exit(2)
+    else:
+        print "UNKNOWN- %s | %s" % (output, output)
+        sys.exit(3)
+
+
+if __name__ == "__main__":
+    args = parse_arguments()
+    if args.debug:
+        logger.setLevel(satellite_sanity_lib.config.L_DEBUG)
+
+    # Create object to work with rules
+    rule_container = satellite_sanity_lib.plugins.Rules()
+
+    tags = args.tags.split(',')
+    if args.rules:
+        rules = args.rules.split(',')
+    else:
+        rules = []
+
+    if args.list_tags:
+        list_tags()
+        sys.exit()
+    elif args.list_rules:
+        list_rules(args, rule_container)
+        sys.exit()
+
+
+    input_data = acquire_input_data(args.from_dir)
+
+    if args.save:
+        data_dir = input_data.save()
+        print "Saved to %s" % data_dir
+        sys.exit(0)
+
+    if not check_rules_runnable(input_data) and not args.force:
+        # If we have not fulfilled all prerequisities for rules, and we are not in force mode, quit
+        print >> sys.stderr, "ERROR: Some prerequisities were not met. Exiting. Maybe you want to add '--force'?"
+        sys.exit(1)
+
+    results = process_rules(input_data, rule_container, rules, tags)
+
+    if args.nagios_plugin:
+        nagios_output(results)
+    else:
+        if results["FAIL"] > 100:
+            failed = 100
+        else:
+            failed = results["FAIL"]
+        sys.exit(failed)
+

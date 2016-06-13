@@ -3,7 +3,7 @@
 
 import unittest
 
-from satellite_sanity.rules import sat5_diskspace_check
+from satellite_sanity_lib.rules import sat5_diskspace_check
 
 class TestSat5DiskspaceCheck(unittest.TestCase):
 

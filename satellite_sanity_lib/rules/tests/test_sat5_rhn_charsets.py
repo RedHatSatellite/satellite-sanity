@@ -3,7 +3,7 @@
 
 import unittest
 
-from satellite_sanity.rules import sat5_rhn_charsets
+from satellite_sanity_lib.rules import sat5_rhn_charsets
 
 CORRECT_PG = """ server_encoding 
 -----------------

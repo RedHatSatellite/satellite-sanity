@@ -3,7 +3,7 @@
 
 import unittest
 
-from satellite_sanity.rules import sat5_hw_reqs
+from satellite_sanity_lib.rules import sat5_hw_reqs
 
 UNAME_A_CORRECT = ['Linux x86-64.example.com 2.6.32-573.11.1.el6.x86_64 #1 SMP Fri Nov 13 05:11:49 EST 2015 x86_64 x86_64 x86_64 GNU/Linux']
 UNAME_A_S390X = ['Linux s390x.example.com 2.6.32-573.18.1.el6.s390x #1 SMP Wed Jan 6 11:16:09 EST 2016 s390x s390x s390x GNU/Linux']

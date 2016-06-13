@@ -6,7 +6,7 @@ name = 'Taskomatic service is not stuck'
 
 import time
 import datetime
-from satellite_sanity import util
+from satellite_sanity_lib import util
 
 def get_current_time(data):
     return util.get_current_time(data['date'])
