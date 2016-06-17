@@ -30,16 +30,14 @@ def os_arch(uname_a):
   return uname_a[0].split()[-2]
 
 
-def cpu_speed(proc_cpuinfo, uname_a):
+def cpu_speed(cpu_max_freq, uname_a):
   """
   Return processor speed on x86_64.   FIXME: what about processor scaling?
   Returns None on s390x.
   """
   if os_arch(uname_a) == 'x86_64':
-    for line in proc_cpuinfo:
-      if line.startswith('cpu MHz'):
-        val = line.split(':')[1].strip()
-        return float(val)
+    val = max([int(line) for line in cpu_max_freq])/1000
+    return float(val)
 
 
 def cpu_cache(proc_cpuinfo, uname_a):

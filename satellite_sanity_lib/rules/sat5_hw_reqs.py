@@ -18,7 +18,7 @@ def cpu_speed(data):
   Return processor speed so we can ensure we have >=2.4GHz on x86_64.
   Returns None on s390x.
   """
-  return util.cpu_speed(data['proc_cpuinfo'], data['uname_a'])
+  return util.cpu_speed(data['cpu_max_freq'], data['uname_a'])
 
 def cpu_cache(data):
   """

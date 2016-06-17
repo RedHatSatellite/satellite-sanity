@@ -122,7 +122,7 @@ class Rules(object):
                 logger.error("Data not available for %s" % rule.__name__)
                 result = False
             except:
-                logger.exception("Something failed badly when executing %s" % rule["name"])
+                logger.exception("Something failed badly when executing %s" % rule.__name__)
                 result = False
 
             logger.info("Rule %s returned %s" % (rule.__name__, result))
