@@ -22,6 +22,7 @@ from test_sat6_task_pending import TestSat6TaskPending
 from test_sat6_hammer_ping import TestSat6HammerPing
 from test_sat6_correct_channel import TestSat6CorrectChannel
 from test_sat5_frequent_osad_disconnects import TestSat5FrequentOsadDisconnects
+from test_selinux import TestSELinux
 
 if __name__ == '__main__':
     # TODO: Also check that all rules have corresponding test module
