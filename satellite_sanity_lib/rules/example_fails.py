@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-tags = ['general']
+tags = ['test']
 name = 'Just a demo rule which keeps failing'
 
 def main(data):
