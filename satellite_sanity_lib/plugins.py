@@ -113,9 +113,12 @@ class Rules(object):
         """Run rules (run all when "rules" is empty, othervise run only these
            listed there) and return dict with their answers"""
         results = []
-        rules.extend(self.list_rules(tags))
+        if len(rules) == 0:
+          for rule in self.list_rules(tags):
+            rules.append(rule["label"])
+
         for rulename in rules:
-            rule = self.rules[rulename["label"]]
+            rule = self.rules[rulename]
             try:
                 result = rule.main(data)
             except DataNotAvailable:

@@ -4,7 +4,8 @@
 import sys
 import unittest
 
-sys.path.append('satellite_sanity/rules/tests/')
+sys.path.append('satellite_sanity_lib/rules/tests/')
+
 from test_example_fails import TestExampleFails
 from test_sat_uppercase_hostname import TestSatUppercaseHostname
 from test_sat5_correct_java import TestSat5CorrectJava

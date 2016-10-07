@@ -205,6 +205,16 @@ HugePages_Free:      0
 HugePages_Rsvd:      0
 Hugepagesize:     4096 kB""".split("\n")
 
+CPU_FREQ_CORRECT="""26000000
+26000000
+26000000
+26000000""".split("\n")
+
+CPU_FREQ_INCORRECT="""1595000
+1595000
+1595000
+1595000""".split("\n")
+
 class TestSat5HWReqs(unittest.TestCase):
 
     def test_os_arch(self):
@@ -216,24 +226,28 @@ class TestSat5HWReqs(unittest.TestCase):
         input_data = {}
         input_data['uname_a'] = UNAME_A_CORRECT
         input_data['proc_cpuinfo'] = CPUINFO_CORRECT
-        self.assertEquals(2600.004, sat5_hw_reqs.cpu_speed(input_data))
+        input_data['cpu_max_freq'] = CPU_FREQ_CORRECT
+        self.assertEquals(26000.0, sat5_hw_reqs.cpu_speed(input_data))
 
     def test_cpu_speed_ee(self):
         input_data = {}
         input_data['uname_a'] = UNAME_A_WRONG
         input_data['proc_cpuinfo'] = CPUINFO_CORRECT
+        input_data['cpu_max_freq'] = CPU_FREQ_CORRECT
         self.assertEquals(None, sat5_hw_reqs.cpu_speed(input_data))
 
     def test_cpu_cache_ok(self):
         input_data = {}
         input_data['uname_a'] = UNAME_A_CORRECT
         input_data['proc_cpuinfo'] = CPUINFO_CORRECT
+        input_data['cpu_max_freq'] = CPU_FREQ_CORRECT
         self.assertEquals(20480, sat5_hw_reqs.cpu_cache(input_data))
 
     def test_cpu_cache_ee(self):
         input_data = {}
         input_data['uname_a'] = UNAME_A_WRONG
         input_data['proc_cpuinfo'] = CPUINFO_CORRECT
+        input_data['cpu_max_freq'] = CPU_FREQ_CORRECT
         self.assertEquals(None, sat5_hw_reqs.cpu_cache(input_data))
 
     def test_ram_size(self):
@@ -244,6 +258,7 @@ class TestSat5HWReqs(unittest.TestCase):
         input_data['uname_a'] = UNAME_A_CORRECT
         input_data['proc_cpuinfo'] = CPUINFO_CORRECT
         input_data['proc_meminfo'] = MEMINFO_CORRECT
+        input_data['cpu_max_freq'] = CPU_FREQ_CORRECT
         self.assertEquals(None, sat5_hw_reqs.main(input_data))
 
     def test_main_match_cpu(self):
@@ -251,6 +266,7 @@ class TestSat5HWReqs(unittest.TestCase):
         input_data['uname_a'] = UNAME_A_CORRECT
         input_data['proc_cpuinfo'] = CPUINFO_WRONG
         input_data['proc_meminfo'] = MEMINFO_CORRECT
+        input_data['cpu_max_freq'] = CPU_FREQ_INCORRECT
         expected = {'errors': [
             'CPU speed 1595 MHz is below minimal requirement of 2400 MHz'
         ]}
@@ -261,6 +277,7 @@ class TestSat5HWReqs(unittest.TestCase):
         input_data['uname_a'] = UNAME_A_CORRECT
         input_data['proc_cpuinfo'] = CPUINFO_CORRECT
         input_data['proc_meminfo'] = MEMINFO_WRONG
+        input_data['cpu_max_freq'] = CPU_FREQ_CORRECT
         expected = {'errors': [
             'RAM size 2075004.0 kB is below minimal requirement of 4194304 kB'
         ]}
@@ -271,6 +288,7 @@ class TestSat5HWReqs(unittest.TestCase):
         input_data['uname_a'] = UNAME_A_CORRECT
         input_data['proc_cpuinfo'] = CPUINFO_WRONG
         input_data['proc_meminfo'] = MEMINFO_WRONG
+        input_data['cpu_max_freq'] = CPU_FREQ_INCORRECT
         expected = {'errors': [
             'CPU speed 1595 MHz is below minimal requirement of 2400 MHz',
             'RAM size 2075004.0 kB is below minimal requirement of 4194304 kB'
