@@ -8,25 +8,32 @@ import ConfigParser
 import tempfile
 import datetime
 
-from config import logger
+from config import logger, D_TMP
 
 class DataNotAvailable(Exception):
     pass
 
 class InputData(object):
-  def __init__(self, data_dir=None):
+  def __init__(self, directory=None, archives=None):
     self.__data = {}   # data storage (e.g. key/label = 'hostname-s'
                        # and value = 'dhcp123-45')
-    self.__data_dir = data_dir   # if set to none, when asked for some label,
-                                 # execute coresponding command, if set to
-                                 # string, it is a directory and when asked
-                                 # for label return content of coresponding
-                                 # file
+    if archives:   # if running from archives, extract them
+      directory = self.__prepare(archives)
+    self.__data_dir = directory   # if set to none, when asked for some label,
+                                  # execute coresponding command, if set to
+                                  # string, it is a directory and when asked
+                                  # for label return content of coresponding
+                                  # file
+    self.__check_data_dir()
     self.__access_list = {}
     self.__config_filename = os.path.join(os.path.dirname(__file__), 'config.ini')
     self.__config_commands_section = 'commands'
     self.__config_files_section = 'files'
     self.__load_config()
+
+  def __check_data_dir(self):
+    """Check that data directory exists"""
+    pass
 
   def __load_config(self):
     """Loads mapping of label to actual command in case we are running on live
@@ -40,6 +47,45 @@ class InputData(object):
     for k, v in dict(config.items(self.__config_files_section)).iteritems():
       self.config['files'][k] = v.splitlines()
     logger.debug("Loaded commands and files config %s" % self.config)
+
+  def __prepare(self, archives):
+    data_dir_timestamp = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    data_dir_prefix = 'satellite-sanity-extract-%s' % data_dir_timestamp
+    data_dir_base = tempfile.mkdtemp(suffix='', prefix='%s-' % data_dir_prefix, dir=D_TMP)
+    for f in archives:
+      if f.startswith('satellite-sanity'):
+        d='satellite-sanity'
+      if f.startswith('sosreport'):
+        d='sosreport'
+      if f.startswith('spacewalk-debug'):
+        d='spacewalk-debug'
+      if f.startswith('foreman-debug'):
+        d='foreman-debug'
+      data_dir = os.path.join(data_dir_base, d)
+      os.makedirs(data_dir)
+      self.__extract(f, data_dir)
+    logger.info("Extracted to %s" % data_dir_base)
+    print "Extracted to %s" % data_dir_base
+    return data_dir_base
+
+  def __extract(self, filename, directory):
+    logger.debug("Extracting %s to %s" % (filename, directory))
+    # Various extraction commands for various file extensions
+    if filename.endswith('.tar'):
+        command = ['tar', '-xf', filename, '--strip', '1', '--no-same-permissions', '--no-same-owner', '-C', directory]
+    elif filename.endswith('.tar.gz'):
+        command = ['tar', '-xzf', filename, '--strip', '1', '--no-same-permissions', '--no-same-owner', '-C', directory]
+    elif filename.endswith('.tar.bz2'):
+        command = ['tar', '-xjf', filename, '--strip', '1', '--no-same-permissions', '--no-same-owner', '-C', directory]
+    elif filename.endswith('.tar.xz'):
+        command = ['tar', '-xJf', filename, '--strip', '1', '--no-same-permissions', '--no-same-owner', '-C', directory]
+    else:
+        raise Exception("Unknown archive extension %s" % filename)
+    # Extract
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # Ensure there was no content in stderr
+    stdout, stderr = process.communicate()
+    assert len(stderr) == 0, "Extraction failed with '%s' when running '%s'" % (stderr, command)
 
   def __load(self, label):
     """Get output of coresponding command or if __data_dir is set load
@@ -100,10 +146,9 @@ class InputData(object):
 
   def save(self):
     """Dump all data we can collect to tmp directory"""
-    data_tmp = '/tmp'
     data_dir_timestamp = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     data_dir_prefix = 'satellite-sanity-save-%s' % data_dir_timestamp
-    data_dir_base = tempfile.mkdtemp(suffix='', prefix='%s-' % data_dir_prefix, dir=data_tmp)
+    data_dir_base = tempfile.mkdtemp(suffix='', prefix='%s-' % data_dir_prefix, dir=D_TMP)
     data_dir = os.path.join(data_dir_base, 'satellite-sanity')
     os.makedirs(data_dir)
     logger.debug("Saving to directory %s" % data_dir)

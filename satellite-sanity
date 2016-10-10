@@ -20,7 +20,10 @@ def parse_arguments():
                         default="general")
     parser.add_argument("-r", "--rules", help="run only these rules (comma separated)")
     parser.add_argument("-s", "--save", help="just save all collectable data and quit", action="store_true")
-    parser.add_argument("-i", "--from_dir", help="run rules on data in given directory")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("-i", "--from_dir", help="run rules on data in given directory")
+    group.add_argument("-a", "--from_archive", help="run rules on data in given tarball (can be present multiple times, e.g. )",
+                       default=[], action="append")
     parser.add_argument("-f", "--force", help="run even if checks for selected tags failed", action="store_true")
     parser.add_argument("-n", "--nagios-plugin", help="run as nagios plugin (exit code and output set appropriately)",
                         action="store_true")
@@ -46,14 +49,6 @@ def list_rules(args, rule_runner):
         print "%s (%s); tags: %s" % (rule['name'],
                                      rule['label'],
                                      ', '.join(rule['tags']))
-
-
-def acquire_input_data(directory=None):
-    if directory:
-        input_data = satellite_sanity_lib.input_data.InputData(args.from_dir)
-    else:
-        input_data = satellite_sanity_lib.input_data.InputData()
-    return input_data
 
 
 def check_rules_runnable(input_data):
@@ -142,8 +137,7 @@ if __name__ == "__main__":
         list_rules(args, rule_container)
         sys.exit()
 
-
-    input_data = acquire_input_data(args.from_dir)
+    input_data = satellite_sanity_lib.input_data.InputData(directory=args.from_dir, archives=args.from_archive)
 
     if args.save:
         data_dir = input_data.save()

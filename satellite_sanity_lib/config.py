@@ -17,3 +17,5 @@ C_FAIL = '\033[91m'
 C_ENDC = '\033[0m'
 C_BOLD = '\033[1m'
 C_UNDERLINE = '\033[4m'
+
+D_TMP = '/tmp'
