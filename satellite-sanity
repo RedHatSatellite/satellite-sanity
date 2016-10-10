@@ -58,9 +58,9 @@ def check_rules_runnable(input_data):
     data_are_ok = True
     if failed:
         for tag, why in failed.iteritems():
-            print >> sys.stderr, "Prerequisites for rules tagged with %s tag were not met:" % tag
+            logger.error("Prerequisites for rules tagged with %s tag were not met:" % tag)
             for w in why:
-                print >> sys.stderr, "  %s" % w
+                logger.error("  %s" % w)
         data_are_ok = False
     return data_are_ok
 
@@ -142,12 +142,11 @@ if __name__ == "__main__":
 
     if args.save:
         data_dir = input_data.save()
-        print "Saved to %s" % data_dir
         sys.exit(0)
 
     if not check_rules_runnable(input_data) and not args.force:
         # If we have not fulfilled all prerequisities for rules, and we are not in force mode, quit
-        print >> sys.stderr, "ERROR: Some prerequisities were not met. Exiting. Maybe you want to add '--force'?"
+        logger.error("Some prerequisities were not met. Exiting. Maybe you want to add '--force'?")
         sys.exit(1)
 
     results = process_rules(input_data, rule_container, rules, tags)

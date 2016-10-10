@@ -34,7 +34,7 @@ set +o pipefail
   | grep --quiet 'CRITICAL- Satellite sanity results: passed: 0, skipped: 0, failed: 1, unknown: 0 | Satellite sanity results: passed: 0, skipped: 0, failed: 1, unknown: 0'
 [ $? -ne 0 ] && bye "FAIL: Nagios output is not correct" 1
 ./satellite-sanity --tags Satellite_5 2>&1 \
-  | grep --quiet "ERROR: Some prerequisities were not met. Exiting. Maybe you want to add '--force'?"
+  | grep --quiet "ERROR\s\+Some prerequisities were not met. Exiting. Maybe you want to add '--force'?"
 [ $? -ne 0 ] && bye "FAIL: Failing check should mention '--force'" 1
 ./satellite-sanity --tags Satellite_5 --force 2>&1 \
   | grep --quiet "^.*FAIL.*Taskomatic service is running (sat5_taskomatic_running)$"

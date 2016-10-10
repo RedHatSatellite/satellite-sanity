@@ -65,7 +65,6 @@ class InputData(object):
       os.makedirs(data_dir)
       self.__extract(f, data_dir)
     logger.info("Extracted to %s" % data_dir_base)
-    print "Extracted to %s" % data_dir_base
     return data_dir_base
 
   def __extract(self, filename, directory):
