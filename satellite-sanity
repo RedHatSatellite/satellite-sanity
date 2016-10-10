@@ -8,6 +8,7 @@ from satellite_sanity_lib.config import logger
 from satellite_sanity_lib import output
 
 import argparse
+import logging
 
 
 def parse_arguments():
@@ -119,7 +120,7 @@ def nagios_output(results):
 if __name__ == "__main__":
     args = parse_arguments()
     if args.debug:
-        logger.setLevel(satellite_sanity_lib.config.L_DEBUG)
+        logging.basicConfig(level=logging.DEBUG)
 
     # Create object to work with rules
     rule_container = satellite_sanity_lib.plugins.Rules()
