@@ -100,9 +100,12 @@ class InputData(object):
 
   def save(self):
     """Dump all data we can collect to tmp directory"""
+    data_tmp = '/tmp'
     data_dir_timestamp = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     data_dir_prefix = 'satellite-sanity-save-%s' % data_dir_timestamp
-    data_dir = tempfile.mkdtemp(suffix='', prefix=data_dir_prefix)
+    data_dir_base = tempfile.mkdtemp(suffix='', prefix='%s-' % data_dir_prefix, dir=data_tmp)
+    data_dir = os.path.join(data_dir_base, 'satellite-sanity')
+    os.makedirs(data_dir)
     logger.debug("Saving to directory %s" % data_dir)
     for key in self.config['commands'].keys():
       data_file = os.path.join(data_dir, key)
@@ -118,7 +121,14 @@ class InputData(object):
       else:
           data_file_lines = -1
       logger.debug("Saved %s lines to %s" % (data_file_lines, data_file))
-    return data_dir
+    data_tarxz = "%s.tar.xz" % data_dir_base
+    command = ['tar', '-cJf', data_tarxz, '-C', data_dir_base, 'satellite-sanity']
+    logger.debug("Running %s" % command)
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = process.communicate()
+    assert len(stderr) == 0, "Compress failed with '%s' when running '%s'" % (stderr, command)
+    logger.info("Saved to %s" % data_tarxz)
+    return data_tarxz
 
   def get_access_list(self):
     """Return list of labes requested so far"""
