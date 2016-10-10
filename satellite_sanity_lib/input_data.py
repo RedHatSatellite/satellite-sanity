@@ -58,6 +58,7 @@ class InputData(object):
       stdout, stderr = process.communicate()
       if len(stderr) != 0:
         logger.warn("Command '%s' failed with '%s'" % (self.config['commands'][label], stderr))
+        self.__data[label] = None
         raise DataNotAvailable("Command '%s' failed with '%s'" % (self.config['commands'][label], stderr))
       self.__data[label] = stdout.strip().split("\n")
     else:
@@ -77,11 +78,13 @@ class InputData(object):
           fp = open(f, 'r')
         except IOError:
           logger.warn("Failed to load %s for %s" % (f, label))
+          self.__data[label] = None
           raise DataNotAvailable("Failed to load %s for %s" % (f, label))
         self.__data[label] = fp.read().splitlines()
         fp.close()
       else:
         logger.warn("Suitable file for %s not found" % label)
+        self.__data[label] = None
         raise DataNotAvailable("Suitable file for %s not found" % label)
 
   def __getitem__(self, label):
@@ -107,7 +110,7 @@ class InputData(object):
       try:
         for row in self[key]:
           fd.write("%s\n" % row)
-      except AssertionError:
+      except DataNotAvailable:
         logger.warn("Failed when obtaining %s" % key)
       fd.close()
       if self[key] is not None:
