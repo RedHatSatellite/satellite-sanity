@@ -22,7 +22,7 @@ function bye() {
 
 set +e
 ./satellite-sanity --tags demo >/dev/null && bye "FAIL: Plain run failed" 1
-./satellite-sanity --tags Satellite_5 &>/dev/null && bye "FAIL: Plain run failed" 1   # check for this tag should fail
+./satellite-sanity --tags Satellite_5 && bye "FAIL: Plain run failed" 1   # check for this tag should fail
 ./satellite-sanity --tags demo --rules example_fails >/dev/null && bye "FAIL: Run with specified rule failed" 1
 ./satellite-sanity --tags demo --rules example_fails 2>&1 \
   | grep --quiet 'Selected rule(s): example_fails'
