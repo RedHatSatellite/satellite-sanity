@@ -13,7 +13,7 @@ def main(data):
                 failed_services.add(service)
         return failed_services
 
-    expected_services = ('candlepin', 'candlepin_auth', 'pulp', 'pulp_auth', 'elasticsearch', 'foreman_tasks')
+    expected_services = ('candlepin', 'candlepin_auth', 'pulp', 'foreman_tasks')
     seen_services = set()
     failed_services = set()   # not a list to keep this unique
     service = None
