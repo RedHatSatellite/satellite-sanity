@@ -252,32 +252,32 @@ class TestSat5FrequentOsadDisconnects(unittest.TestCase):
     def test_indicator_syslog(self):
         input_data = {'tail_n_100_var_log_messages': SYSLOG_CORRECT}
         expected = [
-            {'date': datetime.datetime(2016, 3, 16, 1, 11, 14), 'ip': '10.9.48.12', 'jid': 'osad-3de354aec4@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 23, 36, 19), 'ip': '10.9.48.12', 'jid': 'osad-3de354aec4@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 19, 16, 9), 'ip': '10.9.48.12', 'jid': 'osad-3de354aec4@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 14, 49, 7), 'ip': '10.9.48.12', 'jid': 'osad-3de354aec4@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 14, 3, 3), 'ip': '10.9.48.12', 'jid': 'osad-3de354aec4@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 12, 40, 4), 'ip': '10.9.48.12', 'jid': 'osad-3de354aec4@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 11, 19, 41), 'ip': '10.9.48.12', 'jid': 'osad-3de354aec4@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 7, 28, 28), 'ip': '10.17.64.86', 'jid': 'osad-6c4322fa9a@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 7, 28, 26), 'ip': '10.17.64.86', 'jid': 'osad-3358eaf2b5@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 7, 28, 24), 'ip': '10.17.64.86', 'jid': 'osad-06386d3502@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 7, 28, 23), 'ip': '10.17.64.86', 'jid': 'osad-2b294f5c35@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 7, 28, 23), 'ip': '10.17.64.86', 'jid': 'osad-ceecf22599@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 7, 28, 23), 'ip': '10.17.64.86', 'jid': 'osad-b1f87862c8@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 7, 28, 23), 'ip': '10.17.64.86', 'jid': 'osad-01f62470a3@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 7, 28, 22), 'ip': '10.17.64.86', 'jid': 'osad-6fb988741e@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 7, 8, 28), 'ip': '10.35.130.126', 'jid': 'rhn-dispatcher-sat@satellite.example.com/superclient'},
-            {'date': datetime.datetime(2016, 3, 15, 4, 38, 8), 'ip': '10.9.48.12', 'jid': 'osad-3de354aec4@satellite.example.com/osad'}]
+            {'date': datetime.datetime(YEAR, 3, 16, 1, 11, 14), 'ip': '10.9.48.12', 'jid': 'osad-3de354aec4@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 23, 36, 19), 'ip': '10.9.48.12', 'jid': 'osad-3de354aec4@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 19, 16, 9), 'ip': '10.9.48.12', 'jid': 'osad-3de354aec4@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 14, 49, 7), 'ip': '10.9.48.12', 'jid': 'osad-3de354aec4@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 14, 3, 3), 'ip': '10.9.48.12', 'jid': 'osad-3de354aec4@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 12, 40, 4), 'ip': '10.9.48.12', 'jid': 'osad-3de354aec4@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 11, 19, 41), 'ip': '10.9.48.12', 'jid': 'osad-3de354aec4@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 7, 28, 28), 'ip': '10.17.64.86', 'jid': 'osad-6c4322fa9a@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 7, 28, 26), 'ip': '10.17.64.86', 'jid': 'osad-3358eaf2b5@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 7, 28, 24), 'ip': '10.17.64.86', 'jid': 'osad-06386d3502@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 7, 28, 23), 'ip': '10.17.64.86', 'jid': 'osad-2b294f5c35@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 7, 28, 23), 'ip': '10.17.64.86', 'jid': 'osad-ceecf22599@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 7, 28, 23), 'ip': '10.17.64.86', 'jid': 'osad-b1f87862c8@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 7, 28, 23), 'ip': '10.17.64.86', 'jid': 'osad-01f62470a3@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 7, 28, 22), 'ip': '10.17.64.86', 'jid': 'osad-6fb988741e@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 7, 8, 28), 'ip': '10.35.130.126', 'jid': 'rhn-dispatcher-sat@satellite.example.com/superclient'},
+            {'date': datetime.datetime(YEAR, 3, 15, 4, 38, 8), 'ip': '10.9.48.12', 'jid': 'osad-3de354aec4@satellite.example.com/osad'}]
         self.assertEqual(expected, sat5_frequent_osad_disconnects.indicator_syslog(input_data, START_DATE))
 
     def test_indicator_syslog_wrong(self):
         input_data = {'tail_n_100_var_log_messages': SYSLOG_WRONG}
         expected = [
-            {'date': datetime.datetime(2016, 3, 15, 12, 39, 30), 'ip': '192.168.29.1', 'jid': 'osad-fc2a194137@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 12, 38, 3), 'ip': '192.168.29.3', 'jid': 'osad-fc2a194137@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 12, 36, 45), 'ip': '192.168.29.2', 'jid': 'osad-fc2a194137@satellite.example.com/osad'},
-            {'date': datetime.datetime(2016, 3, 15, 12, 36, 30), 'ip': '192.168.29.1', 'jid': 'osad-fc2a194137@satellite.example.com/osad'}]
+            {'date': datetime.datetime(YEAR, 3, 15, 12, 39, 30), 'ip': '192.168.29.1', 'jid': 'osad-fc2a194137@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 12, 38, 3), 'ip': '192.168.29.3', 'jid': 'osad-fc2a194137@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 12, 36, 45), 'ip': '192.168.29.2', 'jid': 'osad-fc2a194137@satellite.example.com/osad'},
+            {'date': datetime.datetime(YEAR, 3, 15, 12, 36, 30), 'ip': '192.168.29.1', 'jid': 'osad-fc2a194137@satellite.example.com/osad'}]
         self.assertEqual(expected, sat5_frequent_osad_disconnects.indicator_syslog(input_data, START_DATE))
 
     def test_indicator_dblog(self):
