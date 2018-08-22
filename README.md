@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/RedHatSatellite/satellite-sanity.svg?branch=master)](https://travis-ci.org/RedHatSatellite/satellite-sanity)
 
+IMPORTANT: Please note we do not plan any extra work being done on this project. Sanity checks for Foreman and Satellite 6 are currently gathered in this tool: https://github.com/theforeman/foreman_maintain (also packaged for Sat6).
+
 satellite-sanity
 ================
 
