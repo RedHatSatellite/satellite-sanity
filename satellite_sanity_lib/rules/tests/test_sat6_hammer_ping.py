@@ -7,73 +7,61 @@ from satellite_sanity_lib.rules import sat6_hammer_ping
 
 GOOD = """candlepin:      
     Status:          ok
-    Server Response: Duration: 11ms
+    Server Response: Duration: 46ms
 candlepin_auth: 
     Status:          ok
-    Server Response: Duration: 11ms
+    Server Response: Duration: 15ms
 pulp:           
     Status:          ok
-    Server Response: Duration: 45ms
+    Server Response: Duration: 94ms
 pulp_auth:      
     Status:          ok
-    Server Response: Duration: 13ms
-elasticsearch:  
-    Status:          ok
-    Server Response: Duration: 6ms
+    Server Response: Duration: 50ms
 foreman_tasks:  
     Status:          ok
-    Server Response: Duration: 0ms
+    Server Response: Duration: 141ms
 """.split("\n")
 BAD = """candlepin:      
     Status:          ok
-    Server Response: Duration: 11ms
+    Server Response: Duration: 18ms
 candlepin_auth: 
     Status:          ok
-    Server Response: Duration: 10ms
+    Server Response: Duration: 14ms
 pulp:           
     Status:          ok
-    Server Response: Duration: 36ms
+    Server Response: Duration: 76ms
 pulp_auth:      
     Status:          ok
-    Server Response: Duration: 15ms
-elasticsearch:  
-    Status:          FAIL
-    Server Response: Message: Connection refused - connect(2)
+    Server Response: Duration: 30ms
 foreman_tasks:  
-    Status:          ok
-    Server Response: Duration: 0ms
+    Status:          FAIL
+    Server Response:
 """.split("\n")
 UGLY = """candlepin:      
     Status:          ok
-    Server Response: Duration: 11ms
+    Server Response: Duration: 18ms
 candlepin_auth: 
     Status:          ok
-    Server Response: Duration: 10s
+    Server Response: Duration: 14ms
 pulp:           
-    Status:          FAIL
-    Server Response: Duration: 36ms
+    Status:          ok
+    Server Response: Duration: 76ms
 pulp_auth:      
     Status:          ok
-    Server Response: Message: Connection refused - connect(2)
-elasticsearch:  
-    Status:          ok
-    Server Response: Duration: 15ms
+    Server Response: Duration: 30ms
 foreman_tasks:  
     Status:          ok
-    Server Response: Duration: 0ms
+    Server Response:
 """.split("\n")
 MISSING = """pulp:           
     Status:          ok
-    Server Response: Duration: 45ms
+    Server Response: Duration: 76ms
 pulp_auth:      
     Status:          ok
-    Server Response: Duration: 13ms
-elasticsearch:  
-    Status:          ok
-    Server Response: Duration: 6ms
+    Server Response: Duration: 30ms
 foreman_tasks:  
     Status:          ok
-    Server Response: Duration: 0ms
+    Server Response: Duration: 141ms
 nonsense:       
     Status:          ok
     Server Response: Duration: 0ms
@@ -82,11 +70,11 @@ nonsense:
 class TestSat6HammerPing(unittest.TestCase):
   def test_match(self):
     input_data = {'hammer_ping': BAD}
-    self.assertEqual({'failed_services': set(['elasticsearch'])}, sat6_hammer_ping.main(input_data))
+    self.assertEqual({'failed_services': set(['foreman_tasks'])}, sat6_hammer_ping.main(input_data))
 
   def test_match_ugly(self):
     input_data = {'hammer_ping': UGLY}
-    self.assertEqual({'failed_services': set(['pulp', 'pulp_auth'])}, sat6_hammer_ping.main(input_data))
+    self.assertEqual({'failed_services': set(['foreman_tasks'])}, sat6_hammer_ping.main(input_data))
 
   def test_match_missing(self):
     input_data = {'hammer_ping': MISSING}

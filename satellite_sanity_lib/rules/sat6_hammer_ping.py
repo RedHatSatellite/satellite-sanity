@@ -13,7 +13,7 @@ def main(data):
                 failed_services.add(service)
         return failed_services
 
-    expected_services = ('candlepin', 'candlepin_auth', 'pulp', 'foreman_tasks')
+    expected_services = ('candlepin', 'candlepin_auth', 'pulp', 'pulp_auth', 'foreman_tasks')
     seen_services = set()
     failed_services = set()   # not a list to keep this unique
     service = None
@@ -21,7 +21,7 @@ def main(data):
     response = None
     for row in data['hammer_ping']:
         # Looks like we are entering new service section
-        m = re.search('^(.*):\s*$', row)
+        m = re.search('^([a-z_]*):\s*$', row)
         if m:
             # Ensure we have properly loaded status and response for service
             # we have just processed
@@ -37,7 +37,7 @@ def main(data):
             if status != 'ok':
                 failed_services.add(service)
             continue
-        m = re.search('^\s*Server Response:\s*(.+)\s*$', row)
+        m = re.search('^\s*Server Response:\s*(.*)\s*$', row)
         if m:
             response = m.group(1)
             if not re.match('^Duration: [0-9]+m?s$', response):
